@@ -21,7 +21,6 @@ events = [
 def find_event(event_id):
     return next((e for e in events if e.id == event_id), None)
 
-# POST /events - Create a new event
 @app.route("/events", methods=["POST"])
 def create_event():
     data = request.get_json()
@@ -31,9 +30,8 @@ def create_event():
     new_id = max([e.id for e in events]) + 1 if events else 1
     new_event = Event(new_id, data["title"])
     events.append(new_event)
-    return jsonify(new_event.to_dict()), 201  # 201 Created
+    return jsonify(new_event.to_dict()), 201
 
-# PATCH /events/<id> - Update event title
 @app.route("/events/<int:event_id>", methods=["PATCH"])
 def update_event(event_id):
     data = request.get_json()
@@ -45,9 +43,8 @@ def update_event(event_id):
         return jsonify({"error": "Title is required"}), 400
 
     event.title = data["title"]
-    return jsonify(event.to_dict()), 200  # 200 OK
+    return jsonify(event.to_dict()), 200
 
-# DELETE /events/<id> - Remove event
 @app.route("/events/<int:event_id>", methods=["DELETE"])
 def delete_event(event_id):
     event = find_event(event_id)
@@ -56,8 +53,7 @@ def delete_event(event_id):
         return jsonify({"error": "Event not found"}), 404
 
     events.remove(event)
-    return jsonify({"message": f"Event {event_id} deleted"}), 200
+    return "", 204
 
 if __name__ == "__main__":
     app.run(debug=True)
-
